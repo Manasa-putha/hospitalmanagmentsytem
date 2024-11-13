@@ -1,0 +1,111 @@
+
+<h2>All Appointments</h2>
+<div class="filters">
+    
+    <mat-form-field>
+      <mat-label>Filter by Date</mat-label>
+      <input matInput [matDatepicker]="picker" (dateChange)="filterByDate($event.value)" placeholder="Select Date">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+ 
+    <mat-form-field>
+      <mat-label>Filter by Time</mat-label>
+     
+      <input matInput [(ngModel)]="timeInput" (ngModelChange)="filterByTime(timeInput)" placeholder="Enter Time (e.g., 14:00)">
+    </mat-form-field>
+
+    
+    <mat-form-field>
+      <mat-label>Filter by Doctor</mat-label>
+      <mat-select (selectionChange)="filterByDoctor($event.value)">
+        <!-- <mat-option *ngFor="let doctor of doctors" [value]="doctor.id">{{ doctor.name }}</mat-option> -->
+        <!-- <mat-option *ngFor="let doctor of doctors" [value]="doctor">{{ doctor }}</mat-option> -->
+        <mat-option *ngFor="let doctor of doctors" [value]="doctor.staff.fullName">{{ doctor.staff.fullName}}</mat-option>
+
+      </mat-select>
+    </mat-form-field>
+
+
+    <mat-form-field>
+      <mat-label>Filter by Specialty</mat-label>
+      <mat-select (selectionChange)="filterBySpecialty($event.value)">
+        <!-- <mat-option *ngFor="let specialty of specialties" [value]="specialty">{{ specialty }}</mat-option> -->
+        <mat-option *ngFor="let specialty of specialties" [value]="specialty">{{ specialty }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+   
+   <div *ngIf="loading">Loading medical history...</div>
+
+  
+   <div *ngIf="!loading && appointments.length === 0">
+     <p>No appointments available based on the filters.</p>
+   </div>
+ 
+<table mat-table [dataSource]="filteredAppointments" class="mat-elevation-z8">
+    <ng-container matColumnDef="appointmentId">
+        <th mat-header-cell *matHeaderCellDef> ID </th>
+        <td mat-cell *matCellDef="let appointment"> {{ appointment.appointmentId }} </td>
+      </ng-container>
+
+  <ng-container matColumnDef="appointmentDate">
+    <th mat-header-cell *matHeaderCellDef> Date </th>
+    <td mat-cell *matCellDef="let appointment"> {{ appointment.appointmentDate | date:'shortDate' }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="timeSlot">
+    <th mat-header-cell *matHeaderCellDef> TimeSlots </th>
+    <td mat-cell *matCellDef="let appointment"> {{ appointment.timeSlot }} </td>
+  </ng-container>
+  <ng-container matColumnDef="status">
+    <th mat-header-cell *matHeaderCellDef> Status </th>
+    <td mat-cell *matCellDef="let appointment"> {{ appointment.status }} </td>
+  </ng-container>
+  <ng-container matColumnDef="doctor">
+    <th mat-header-cell *matHeaderCellDef> Doctor </th>
+    <td mat-cell *matCellDef="let appointment"> {{ appointment.fullName || 'N/A' }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="specialization">
+    <th mat-header-cell *matHeaderCellDef> Specialty </th>
+    <td mat-cell *matCellDef="let appointment"> {{ appointment.specialization || 'N/A' }} </td>
+  </ng-container>
+  <!-- <ng-container matColumnDef="timeSlot">
+    <th mat-header-cell *matHeaderCellDef> Specialty </th>
+    <td mat-cell *matCellDef="let appointment"> {{ appointment.timeSlot }} </td>
+  </ng-container> -->
+  <ng-container matColumnDef="patientId">
+    <th mat-header-cell *matHeaderCellDef> PatientId </th>
+    <td mat-cell *matCellDef="let appointment"> {{ appointment.patientId }} </td>
+  </ng-container>
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef> Actions </th>
+    <td mat-cell *matCellDef="let appointment">
+      <!-- <button mat-button color="primary" (click)="editAppointment(appointment)">Edit</button> -->
+      <button mat-button color="warn" (click)="deleteAppointment(appointment.appointmentId)">Delete</button>
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+
+
+  <mat-dialog-content *ngIf="selectedAppointment">
+    <form [formGroup]="editAppointmentForm" (ngSubmit)="onSubmit()">
+      <mat-form-field>
+        <mat-label>Appointment Date</mat-label>
+        <input matInput formControlName="appointmentDate">
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Time Slot</mat-label>
+        <input matInput formControlName="timeSlot">
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit">Save Changes</button>
+    </form>
+  </mat-dialog-content>
+

@@ -1,0 +1,57 @@
+  <mat-form-field color="accent" appearance="outline" class="filter-form-field">
+    <mat-label><strong>Specialization</strong></mat-label>
+    <mat-select [(value)]="selectedSpecialization" (selectionChange)="filterDoctors()">
+        <mat-option *ngFor="let specialization of specializations" [value]="specialization">{{ specialization }}</mat-option>
+    </mat-select>
+</mat-form-field>
+
+<mat-form-field color="accent" appearance="outline" class="filter-form-field">
+    <mat-label><strong>Date</strong></mat-label>
+    <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate" (dateChange)="filterDoctors()">
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+</mat-form-field>
+<mat-form-field color="accent" appearance="outline" class="filter-form-field">
+    <mat-label><strong>Doctor Name</strong></mat-label>
+    <input matInput [(ngModel)]="doctorName" (ngModelChange)="filterDoctors()" placeholder="Enter doctor's name">
+</mat-form-field>
+
+
+<mat-form-field color="accent" appearance="outline" class="filter-form-field">
+    <mat-label><strong>Time</strong></mat-label>
+    <input matInput [(ngModel)]="selectedTime" (ngModelChange)="filterDoctors()">
+</mat-form-field>
+
+<mat-card>
+    <mat-card-content>
+        Showing Results for {{ getDoctorCount() }} Doctors.
+    </mat-card-content>
+</mat-card>
+
+<mat-accordion multi="true">
+    <ng-container *ngFor="let doctor of filteredDoctors">
+        <mat-expansion-panel [expanded]="true">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    <strong>{{ doctor.staff.fullName }} </strong>
+                </mat-panel-title>
+                <mat-panel-description>
+                    <strong>{{ doctor.specialization }} | {{ doctor.availableDate | date }}</strong>
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <table mat-table [dataSource]="[doctor]">
+                <ng-container matColumnDef="timeSlot">
+                    <th mat-header-cell *matHeaderCellDef> Available Time </th>
+                    <td mat-cell *matCellDef="let doctor"> 
+                       <strong>{{ doctor.timeSlot }} </strong> 
+                        <button mat-raised-button color="accent" (click)="bookAppointment(doctor)"style="margin-left: 800px;background-color: green;">Book</button>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="['timeSlot']"></tr>
+                <tr mat-row *matRowDef="let row; columns: ['timeSlot']"></tr>
+            </table>
+        </mat-expansion-panel>
+    </ng-container>
+</mat-accordion>

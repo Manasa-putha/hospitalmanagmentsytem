@@ -1,0 +1,47 @@
+<h2>Filter Patient History</h2>
+<form [formGroup]="patientFilterForm" (ngSubmit)="onPatientSubmit()">
+  <mat-form-field>
+    <mat-label>Patient ID</mat-label>
+    <input matInput formControlName="patientId">
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Name</mat-label>
+    <input matInput formControlName="patientName">
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" type="submit">Filter</button>
+  <button mat-button type="button" (click)="onResetPatientFilter()">Reset</button>
+</form>
+
+<h2>Patient History</h2>
+<!-- <table mat-table [dataSource]="patients"> -->
+    <table mat-table>
+  <ng-container matColumnDef="patientId">
+    <th mat-header-cell *matHeaderCellDef> Patient ID </th>
+    <td mat-cell *matCellDef="let patient"> {{ patient.patientId }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef> Name </th>
+    <td mat-cell *matCellDef="let patient"> {{ patient.name }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="diagnosis">
+    <th mat-header-cell *matHeaderCellDef> Diagnosis </th>
+    <td mat-cell *matCellDef="let patient"> {{ patient.diagnosis }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="treatment">
+    <th mat-header-cell *matHeaderCellDef> Treatment </th>
+    <td mat-cell *matCellDef="let patient"> {{ patient.treatment }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="testResults">
+    <th mat-header-cell *matHeaderCellDef> Test Results </th>
+    <td mat-cell *matCellDef="let patient"> {{ patient.testResults }} </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="['patientId', 'name', 'diagnosis', 'treatment', 'testResults']"></tr>
+  <tr mat-row *matRowDef="let row; columns: ['patientId', 'name', 'diagnosis', 'treatment', 'testResults'];"></tr>
+</table>

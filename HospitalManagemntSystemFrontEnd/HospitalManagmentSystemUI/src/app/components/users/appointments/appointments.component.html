@@ -1,0 +1,116 @@
+
+<div *ngIf="loading">Loading...</div>
+
+
+<div *ngIf="!loading && appointments.length === 0">
+  <p>No appointments found!</p>
+</div>
+
+<mat-card *ngIf="appointments.length > 0" style="margin-bottom: 20px;">
+  <h3><mat-card-title style="color: orange;">Your Appointments</mat-card-title></h3>
+
+  <table mat-table [dataSource]="appointments" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="dateTime">
+      <th mat-header-cell *matHeaderCellDef> Date & Time </th>
+      <td mat-cell *matCellDef="let appointment">
+        {{ appointment.appointmentDate | date: 'short' }} {{ appointment.timeSlot }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="doctorName">
+      <th mat-header-cell *matHeaderCellDef> Doctor </th>
+      <td mat-cell *matCellDef="let appointment"> {{ appointment.fullName }}</td>
+    </ng-container>
+    <ng-container matColumnDef="specialization">
+      <th mat-header-cell *matHeaderCellDef> Specialization </th>
+      <td mat-cell *matCellDef="let appointment"> {{ appointment.specialization }}</td>
+    </ng-container>
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef> Status </th>
+      <td mat-cell *matCellDef="let appointment"> {{ appointment.status }} </td>
+    </ng-container>
+
+   
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef> Actions </th>
+      <td mat-cell *matCellDef="let appointment">
+        <button  mat-raised-button color="accent"(click)="rebookAppointment(appointment)">Re-book</button>
+        <button  mat-raised-button color="warn" style="margin-left: 20px;"(click)="cancelAppointment(appointment)">Cancel</button>
+      </td>
+    </ng-container>
+
+ 
+    <tr mat-header-row *matHeaderRowDef="['dateTime', 'doctorName','specialization', 'status', 'actions']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['dateTime', 'doctorName','specialization', 'status', 'actions']"></tr>
+  </table>
+</mat-card>
+
+<div>
+<mat-card style="margin-bottom: 20px;">
+  <h3><mat-card-title style="color: rosybrown">Book an Appointment</mat-card-title></h3>
+  <form (ngSubmit)="bookAppointment()"  #appointmentForm="ngForm">
+    
+    <mat-form-field>
+      <mat-label>Select Doctor</mat-label>
+      <mat-select [(ngModel)]="selectedDoctor" name="doctor" required>
+        <mat-option *ngFor="let doctor of doctors" [value]="doctor">{{ doctor.fullName }}</mat-option>
+        <mat-error *ngIf="appointmentForm.controls['doctor']?.invalid && appointmentForm.controls['doctor']?.touched">
+          Doctor is required.
+        </mat-error>
+        
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Select Date</mat-label>
+      <input matInput [matDatepicker]="picker" [(ngModel)]="appointmentDate" name="date" required>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      <mat-error *ngIf="appointmentForm.controls['date']?.invalid && appointmentForm.controls['date']?.touched">
+        Date is required.
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Select Time</mat-label>
+      <input matInput [(ngModel)]="appointmentTime" name="time" placeholder="HH:MM AM/PM" required>
+      <mat-error *ngIf="appointmentForm.controls['time']?.invalid && appointmentForm.controls['time']?.touched">
+        Time is required.
+      </mat-error>
+    </mat-form-field>
+
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="appointmentForm.invalid">Book Appointment</button>
+  </form>
+</mat-card>
+
+</div>
+<br>
+<mat-card style="margin-bottom: 20px;">
+  <h3><mat-card-title style="color: olivedrab">Previous and Upcoming appointments.</mat-card-title></h3>
+  <mat-card-content>
+    <mat-list>
+      <mat-list-item *ngFor="let appointment of upcomingAppointments">
+        <!-- Upcoming: {{ appointment.appointmentDate | date }} - {{ appointment.doctorName }} -->
+        Upcoming: {{ appointment.appointmentDate | date }} - {{ getDoctorName(appointment.staffId) }}
+
+      </mat-list-item>
+
+      <mat-list-item *ngFor="let appointment of pastAppointments">
+        <!-- Past: {{ appointment.appointmentDate | date }} - {{ appointment.doctorName }} -->
+        Past: {{ appointment.appointmentDate | date }} - {{ getDoctorName(appointment.staffId) }}
+        <hr>
+
+      </mat-list-item>
+    </mat-list>
+  </mat-card-content>
+</mat-card>
+
+<mat-card style="margin-bottom: 20px;">
+  <h3><mat-card-title style="color: violet;">Your Medical Records</mat-card-title></h3>
+  <mat-list>
+    <mat-list-item *ngFor="let record of medicalRecords">
+     <strong> Diagnoses:  </strong>{{ record.diagnoses }} -<strong>Treatment: </strong> {{ record.treatment }} -<strong> Test Results: </strong>{{ record.testResults }}
+    </mat-list-item>
+  </mat-list>
+</mat-card>

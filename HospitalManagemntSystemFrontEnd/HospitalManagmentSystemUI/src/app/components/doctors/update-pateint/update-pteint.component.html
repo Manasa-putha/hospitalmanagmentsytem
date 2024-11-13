@@ -1,0 +1,72 @@
+<div>
+    <mat-form-field>
+      <mat-label>Filter by Name or Patient ID</mat-label>
+      <input matInput (input)="onInputChange($event)" placeholder="Search patients">
+    </mat-form-field>
+  </div>
+<div  *ngFor="let patient of filteredPatients"  class="patient-card">
+    <mat-card (click)="selectPatient(patient)"class="patient-card-inner">
+      <mat-card-title>{{ patient.userName }}</mat-card-title>
+ 
+      <mat-card-content>
+        <p><strong> Patient Id :</strong>{{ patient.patientId }}</p>
+        <p><strong>Phone:</strong> {{ patient.phoneNumber }}</p>
+        <p><strong>Email: </strong> {{ patient.email }}</p>
+        <p> <strong> Age:</strong> {{ patient.age }}</p>
+        <p><strong>Sex: </strong>{{ patient.sex }}</p>
+        <p><strong>Address: </strong>{{ patient.address }}, {{ patient.city }}, {{ patient.pinCode }}</p>
+        <!-- <p>Diagnoses: {{ patient.diagnoses }}</p>
+        <p>Diagnoses: {{ patient.treatment }}</p>
+        <p>Diagnoses: {{ patient.testResults }}</p> -->
+      </mat-card-content>
+    </mat-card>
+  </div>
+  
+  <mat-card *ngIf="selectedPatient" #medicalRecords class="medical-records-card">
+    <mat-card-title>Medical Records for {{ selectedPatient.userName }}</mat-card-title>
+    <mat-card-content>
+      <h3>Current Medical Records:</h3>
+      <div *ngFor="let record of selectedPatient.medicalRecords">
+        <p><strong>Record ID:</strong> {{ record.recordId }}</p>
+        <p><strong>Diagnoses:</strong> {{ record.diagnoses }}</p>
+        <p><strong>Treatment:</strong> {{ record.treatment }}</p>
+        <p><strong>Test Results:</strong> {{ record.testResults }}</p>
+        <p><strong>Record Date:</strong> {{ record.recordDate | date }}</p>
+        <hr />
+      </div>
+  
+      <h3>Add/Update Medical Record</h3>
+      <!-- <form [formGroup]="medicalRecordForm" (ngSubmit)="saveMedicalRecord()">
+        <mat-form-field>
+          <mat-label>Diagnoses</mat-label>
+          <input matInput formControlName="diagnoses" required>
+          <mat-error *ngIf="medicalRecordForm.get('diagnoses')?.invalid && medicalRecordForm.get('diagnoses')?.touched">
+            Diagnoses is required.
+          </mat-error>
+        </mat-form-field>
+  
+        <mat-form-field>
+          <mat-label>Treatment</mat-label>
+          <input matInput formControlName="treatment" required>
+          <mat-error *ngIf="medicalRecordForm.get('treatment')?.invalid && medicalRecordForm.get('treatment')?.touched">
+            Treatment is required.
+          </mat-error>
+        </mat-form-field>
+  
+        <mat-form-field>
+          <mat-label>Test Results</mat-label>
+          <input matInput formControlName="testResults" required>
+          <mat-error *ngIf="medicalRecordForm.get('testResults')?.invalid && medicalRecordForm.get('testResults')?.touched">
+            Test results are required.
+          </mat-error>
+        </mat-form-field>
+  
+        <button mat-stroked-button color="accent" [disabled]="medicalRecordForm.invalid" type="submit">
+          <span>Save</span>
+        </button>
+      </form> -->
+    </mat-card-content>
+  </mat-card>
+  
+
+  

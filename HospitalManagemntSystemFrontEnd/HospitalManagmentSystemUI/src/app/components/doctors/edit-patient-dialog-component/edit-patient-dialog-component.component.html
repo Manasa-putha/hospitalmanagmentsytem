@@ -1,0 +1,61 @@
+<h2 mat-dialog-title>Edit Patient</h2>
+<mat-dialog-content>
+  <form [formGroup]="patientForm" (ngSubmit)="onSave()">
+    <mat-form-field>
+      <mat-label>Username</mat-label>
+      <input matInput formControlName="userName" required/>
+      <!-- <mat-error *ngIf="patientForm.get('userName').hasError('required')">User Name is required</mat-error> -->
+
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" type="email" required />
+      <!-- <mat-error *ngIf="patientForm.get('email').hasError('email')">Enter a valid email</mat-error> -->
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Phone Number</mat-label>
+      <input matInput formControlName="phoneNumber" type="tel" formControlName="phoneNumber"/>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Age</mat-label>
+      <input matInput formControlName="age" type="number" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Gender</mat-label>
+      <input matInput formControlName="sex" />
+    </mat-form-field>
+    <h3>Medical Records</h3>
+    
+    <div formArrayName="medicalRecords">
+    
+        <div *ngIf="medicalRecords.length === 0"> 
+          <p>No medical records found.</p>
+          <button mat-button (click)="addMedicalRecord()">Add Medical Record</button> 
+        </div>
+      <div *ngFor="let record of medicalRecords.controls; let i = index" [formGroupName]="i">
+        <mat-form-field appearance="fill">
+          <mat-label>Diagnoses</mat-label>
+          <input matInput formControlName="diagnoses">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Treatment</mat-label>
+          <input matInput formControlName="treatment">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Test Results</mat-label>
+          <input matInput formControlName="testResults">
+        </mat-form-field>
+
+        <button mat-icon-button color="warn"  aria-label="Remove record">
+          <mat-icon>remove_circle</mat-icon>
+        </button>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-button color="primary" (click)="onSave()">Save</button>
+</mat-dialog-actions>
